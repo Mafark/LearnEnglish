@@ -17,13 +17,13 @@ namespace TrainerEnglish
             this.length = length;
             _userProfile = userProfile;
             _listOFWords = listOFWords;
+            originalWord = _listOFWords[rand.Next(0, _listOFWords.Length)];
         }
 
         public string[] GetListWords()
         {
             string[] generatedWords = new string[length + 1];
 
-            originalWord = _listOFWords[rand.Next(0, _listOFWords.Length)];
             generatedWords[0] = originalWord.word;
             generatedWords[rand.Next(1, length + 1)] = originalWord.translation;
 
@@ -31,7 +31,7 @@ namespace TrainerEnglish
 
             for(var i = 0; i < length; i ++)
             {
-                if (_listOFWords[indexes[i]].translation != originalWord.translation)
+                if (generatedWords[i+1] == null)
                 {
                     generatedWords[i + 1] = _listOFWords[indexes[i]].translation;
                 }
