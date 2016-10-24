@@ -1,4 +1,7 @@
-﻿using TrainerEnglish.Users;
+﻿using System;
+using System.Linq;
+using TrainerEnglish;
+using TrainerEnglish.Users;
 
 namespace TrainerEnglish.Application
 {
@@ -13,25 +16,14 @@ namespace TrainerEnglish.Application
 
         public int RegisterUser(string nickname)
         {
-            var newUserId = GetNewUserId();
+            var newUserId = new Func<int>(() =>
+            {
+                var userProfiles = _userProfileRepository.GetAllUserProfiles();
+                return userProfiles.Max(user => user.Id) + 1;
+            })();
             var newUserProfile = new UserProfile(newUserId, nickname, new LearnedWord[0]);
             _userProfileRepository.SaveUserProfile(newUserProfile);
             return newUserId;
-        }
-
-        private int GetNewUserId()
-        {
-            var userProfiles = _userProfileRepository.GetAllUserProfiles();
-            var maxUserId = 1;
-            foreach (var userProfile in userProfiles)
-            {
-                if (userProfile.Id > maxUserId)
-                {
-                    maxUserId = userProfile.Id;
-                }
-            }
-
-            return maxUserId + 1;
         }
     }
 }

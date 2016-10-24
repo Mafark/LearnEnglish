@@ -3,7 +3,5 @@
     public interface IGetterWords
     {
         string[] GetListWords();
-        
-
     }
 }

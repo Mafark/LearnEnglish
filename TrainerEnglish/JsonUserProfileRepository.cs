@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TrainerEnglish.Users;
 
 namespace TrainerEnglish
@@ -24,15 +25,7 @@ namespace TrainerEnglish
         public IUserProfile GetUserProfile(int userId)
         {
             var userProfiles = GetAllUserProfiles();
-            foreach (var userProfile in userProfiles)
-            {
-                if (userProfile.Id == userId)
-                {
-                    return userProfile;
-                }
-            }
-
-            return null;
+            return userProfiles.FirstOrDefault(user => user.Id == userId);
         }
 
         public void SaveUserProfile(IUserProfile userProfile)

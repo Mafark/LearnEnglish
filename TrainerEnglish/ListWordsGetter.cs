@@ -9,7 +9,7 @@ namespace TrainerEnglish
         Word[] _listOFWords;
 
         Word originalWord;
-        public Word OriginalWord { get { return originalWord; } }
+        public Word OriginalWord => originalWord;
         static Random rand = new Random();
 
         public ListWordsGetter(int length, IUserProfile userProfile, Word[] listOFWords)

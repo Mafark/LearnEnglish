@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TrainerEnglish.Users
 {
@@ -20,32 +21,23 @@ namespace TrainerEnglish.Users
 
         public string Nickname { get; private set; }
 
-        public LearnedWord[] learnedWords
-        {
-            get
-            {
-                return _learnedWord.ToArray();
-            }
-        }
+        public LearnedWord[] learnedWords => _learnedWord.ToArray();
 
         public void AddWord(Word newWord)
         {
 
             bool found = false;
-            for (var i = 0; i < _learnedWord.Count; i++)
+            var newLearnedWords = _learnedWord
+                .Where(learnedWord => learnedWord.Word == newWord.word)
+                .ToList();
+
+            if (newLearnedWords.Count == 0)
             {
-                if (_learnedWord[i].Word == newWord.word)
-                {
-                    if (_learnedWord[i].Count < 3)
-                    {
-                        _learnedWord[i].AddView();
-                        found = true;
-                    }
-                }
+                _learnedWord.Add(new LearnedWord(newWord.word, newWord.translation));
             }
-            if (!found)
+            else
             {
-                _learnedWord.Add(new LearnedWord(newWord.word,newWord.translation));
+                newLearnedWords.ForEach(learnedWord => learnedWord.AddView());
             }
         }
     }
