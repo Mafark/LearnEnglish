@@ -21,23 +21,20 @@ namespace TrainerEnglish.Users
 
         public string Nickname { get; private set; }
 
-        public LearnedWord[] learnedWords => _learnedWord.ToArray();
+        public LearnedWord[] learnedWords { get { return _learnedWord.ToArray(); } }
 
         public void AddWord(Word newWord)
         {
+            var newLearnedWord = _learnedWord
+                .FirstOrDefault(learnedWord => learnedWord.Word == newWord.word);
 
-            bool found = false;
-            var newLearnedWords = _learnedWord
-                .Where(learnedWord => learnedWord.Word == newWord.word)
-                .ToList();
-
-            if (newLearnedWords.Count == 0)
+            if (newLearnedWord == null)
             {
                 _learnedWord.Add(new LearnedWord(newWord.word, newWord.translation));
             }
             else
             {
-                newLearnedWords.ForEach(learnedWord => learnedWord.AddView());
+                newLearnedWord.AddView();
             }
         }
     }

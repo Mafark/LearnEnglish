@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace TrainerEnglish
 {
@@ -9,7 +10,7 @@ namespace TrainerEnglish
         Word[] _listOFWords;
 
         Word originalWord;
-        public Word OriginalWord => originalWord;
+        public Word OriginalWord { get { return originalWord; } }
         static Random rand = new Random();
 
         public ListWordsGetter(int length, IUserProfile userProfile, Word[] listOFWords)
@@ -29,15 +30,12 @@ namespace TrainerEnglish
 
             int[] indexes = GetIndexesOfTranslation(originalWord);
 
-            for(var i = 0; i < length; i ++)
-            {
-                if (generatedWords[i+1] == null)
-                {
-                    generatedWords[i + 1] = _listOFWords[indexes[i]].translation;
-                }
-            }
-
-            return generatedWords;
+            var i = -1;
+            return generatedWords.ToList().Select(word => {
+                if (word == null) word = _listOFWords[indexes[i]].translation;
+                i++;
+                return word;
+            }).ToArray();
         }
 
         public int[] GetIndexesOfTranslation(Word OriginalWord)
@@ -45,22 +43,19 @@ namespace TrainerEnglish
             int[] indexes = new int[length];
             int Index;
 
-            for (var j = 0; j < length; j++)
-            {
+            return indexes.
+                Select(item => {
                 Index = rand.Next(0, _listOFWords.Length);
-
-                for (var i = 0; i < _userProfile.learnedWords.Length; i++)
-                {
-                    while (_userProfile.learnedWords[i].Word == _listOFWords[Index].word
-                        || !_userProfile.learnedWords[i].Show)
-                    {
-                        Index = rand.Next(0, _listOFWords.Length);
-                    }
-                }
-                indexes[j] = Index;
-            }
-
-            return indexes;
+                _userProfile.learnedWords.ToList()
+                    .ForEach(learnedWord => {
+                        while (learnedWord.Word == _listOFWords[Index].word
+                                                || !learnedWord.Show)
+                        {
+                            Index = rand.Next(0, _listOFWords.Length);
+                        };
+                    });
+                    return Index;
+            }).ToArray();
         }
     }
 }
